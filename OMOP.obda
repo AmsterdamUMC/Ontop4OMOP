@@ -1,0 +1,69 @@
+[PrefixDeclaration]
+:      http://example.org/omop/
+omop:  http://www.ohdsi.org/omop#
+rdf:   http://www.w3.org/1999/02/22-rdf-syntax-ns#
+rdfs:  http://www.w3.org/2000/01/rdf-schema#
+owl:   http://www.w3.org/2002/07/owl#
+xsd:   http://www.w3.org/2001/XMLSchema#
+
+[MappingDeclaration] @collection [[
+mappingId      person_class
+target         :person/{person_id} a omop:Person .
+source         SELECT person_id FROM person ;
+
+mappingId      person_gender
+target         :person/{person_id} omop:hasGenderConcept :concept/{gender_concept_id} .
+source         SELECT person_id, gender_concept_id FROM person ;
+
+mappingId      person_birth
+target         :person/{person_id} omop:yearOfBirth "{year_of_birth}"^^xsd:gYear .
+source         SELECT person_id, year_of_birth FROM person ;
+
+mappingId      visit_class
+target         :visit/{visit_occurrence_id} a omop:VisitOccurrence .
+source         SELECT visit_occurrence_id FROM visit_occurrence ;
+
+mappingId      visit_person
+target         :visit/{visit_occurrence_id} omop:person :person/{person_id} .
+source         SELECT visit_occurrence_id, person_id FROM visit_occurrence ;
+
+mappingId      visit_type
+target         :visit/{visit_occurrence_id} omop:visitConcept :concept/{visit_concept_id} .
+source         SELECT visit_occurrence_id, visit_concept_id FROM visit_occurrence ;
+
+mappingId      condition_class
+target         :condition/{condition_occurrence_id} a omop:ConditionOccurrence .
+source         SELECT condition_occurrence_id FROM condition_occurrence ;
+
+mappingId      condition_person
+target         :condition/{condition_occurrence_id} omop:person :person/{person_id} .
+source         SELECT condition_occurrence_id, person_id FROM condition_occurrence ;
+
+mappingId      condition_concept
+target         :condition/{condition_occurrence_id} omop:conditionConcept :concept/{condition_concept_id} .
+source         SELECT condition_occurrence_id, condition_concept_id FROM condition_occurrence ;
+
+mappingId      drug_class
+target         :drug/{drug_exposure_id} a omop:DrugExposure .
+source         SELECT drug_exposure_id FROM drug_exposure ;
+
+mappingId      drug_person
+target         :drug/{drug_exposure_id} omop:person :person/{person_id} .
+source         SELECT drug_exposure_id, person_id FROM drug_exposure ;
+
+mappingId      drug_concept
+target         :drug/{drug_exposure_id} omop:drugConcept :concept/{drug_concept_id} .
+source         SELECT drug_exposure_id, drug_concept_id FROM drug_exposure ;
+
+mappingId      measurement_class
+target         :measurement/{measurement_id} a omop:Measurement .
+source         SELECT measurement_id FROM measurement ;
+
+mappingId      measurement_person
+target         :measurement/{measurement_id} omop:person :person/{person_id} .
+source         SELECT measurement_id, person_id FROM measurement ;
+
+mappingId      measurement_concept
+target         :measurement/{measurement_id} omop:measurementConcept :concept/{measurement_concept_id} .
+source         SELECT measurement_id, measurement_concept_id FROM measurement ;
+]]
