@@ -74,3 +74,17 @@ Affiliation (ROR): https://ror.org/05grdyy37
 ## License
 
 MIT License
+
+## AI Transparency Statement
+
+The authors disclose that generative artificial intelligence (AI) tools, including large language models, were used during the preparation of this repository.
+
+AI assistance was limited to:
+* Drafting and refining documentation text
+* Assisting with debugging of configuration and cross‑platform setup issues
+* Generating template files (e.g., license, citation metadata)
+* Improving clarity and structure of technical explanations
+
+* All architectural decisions, code implementation, validation, and scientific interpretation were performed and verified by the authors. The authors reviewed, edited, and take full responsibility for all content in this repository.
+
+No AI system was granted autonomous control over the codebase or publication decisions.
