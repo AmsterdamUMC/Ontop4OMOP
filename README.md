@@ -35,6 +35,8 @@ Clone the repository:
 
 git clone https://github.com/AmsterdamUMC/Ontop4OMOP.git cd Ontop4OMOP
 
+Run code from CREATE duckdb.txt in duckdb.
+
 Start the endpoint (macOS / Linux):
 
 /path/to/ontop endpoint\
@@ -45,7 +47,7 @@ Start the endpoint (macOS / Linux):
 
 Windows PowerShell:
 
-path`\to`{=tex}`\ontop`{=tex}.bat endpoint \^ --ontology=OMOP.ttl \^
+path`\to`{=tex}`\ontop`{=tex}.bat ontop endpoint \^ --ontology=OMOP.ttl \^
 --mapping=OMOP.obda \^ --properties=OMOP.properties \^ --port=8081
 
 Open: http://localhost:8081/sparql
