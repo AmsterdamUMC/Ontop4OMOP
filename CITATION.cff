@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: "Ontop4OMOP: OMOP → Ontop → DuckDB (Parquet) SPARQL Endpoint"
+message: "If you use this software, please cite it."
+type: software
+authors:
+  - family-names: de Groot
+    given-names: Rowdy
+    orcid: "https://orcid.org/0000-0002-1248-1986"
+    affiliation: "Amsterdam UMC"
+  - family-names: Waagmeester
+    given-names: Andra
+    orcid: "https://orcid.org/0000-0001-9773-4008"
+    affiliation: "Amsterdam UMC"
+repository-code: "https://github.com/AmsterdamUMC/Ontop4OMOP"
+license: MIT
