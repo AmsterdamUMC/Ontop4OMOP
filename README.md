@@ -50,7 +50,7 @@ Windows PowerShell:
 path`\to`{=tex}`\ontop`{=tex}.bat ontop endpoint \^ --ontology=OMOP.ttl \^
 --mapping=OMOP.obda \^ --properties=OMOP.properties \^ --port=8081
 
-Open: http://localhost:8081/sparql
+Open: http://localhost:8081
 
 ------------------------------------------------------------------------
 
