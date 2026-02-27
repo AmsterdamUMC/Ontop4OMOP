@@ -1,90 +1,76 @@
-# QLever SPARQL Endpoints: ORDO, HOOM, WikiPathways
+# OMOP → Ontop → DuckDB (Parquet) SPARQL Endpoint
 
-This repository sets up three [QLever](https://github.com/ad-freiburg/qlever) SPARQL endpoints:
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Ontop Version](https://img.shields.io/badge/Ontop-5.x-blue)
+![Java](https://img.shields.io/badge/Java-17%2B-orange)
+![DOI](https://img.shields.io/badge/DOI-pending-lightgrey)
 
-- **ORDO** – Orphanet Rare Disease Ontology  
-- **HOOM** – Health Outcomes Ontology for Orphanet Mapping  
-- **WikiPathways** – RDF export of biological pathways
+This repository provides a cross-platform, reproducible setup for
+exposing OMOP CDM data stored in Parquet files as a SPARQL endpoint
+using:
 
-Each endpoint is configured using a `Qleverfile` and includes a `get-data.sh` script for downloading or preparing its data.
+-   DuckDB (embedded)
+-   Ontop (virtual RDF mapping)
+-   OBDA mappings
 
-## 🔧 Prerequisites
+The setup works on Windows, macOS, and Linux.
 
-- Python 3.10+ with `venv`
-- Docker (including Compose plugin)
-- Recommended: Add your user to the Docker group
+------------------------------------------------------------------------
 
-```bash
-sudo usermod -aG docker $USER
-sudo reboot
-```
+## Overview
 
-## 🚀 Installation
+OMOP Parquet → DuckDB (embedded) → Ontop → SPARQL endpoint
 
-1. Clone this repository and enter it:
+No database server required. No OS-specific paths required. No
+pre-registration of tables required.
 
-   ```bash
-   git clone https://github.com/your-org/your-qlever-repo.git
-   cd your-qlever-repo
-   ```
+DuckDB reads Parquet files directly using `read_parquet()`. Ontop
+exposes the data virtually via SPARQL.
 
-2. Create and activate a Python virtual environment:
+------------------------------------------------------------------------
 
-   ```bash
-   python3 -m venv qlever-venv
-   source qlever-venv/bin/activate
-   pip install --upgrade pip
-   pip install qlever
-   ```
+## Quick Start
 
-## ▶️ Run Each Endpoint
+Clone the repository:
 
-For each endpoint folder (`ordo/`, `hoom/`, `wikipathways/`), run the following commands:
+git clone https://github.com/AmsterdamUMC/Ontop4OMOP.git cd Ontop4OMOP
 
-```bash
-cd <folder>
-./get-data.sh       # Downloads or prepares the RDF data
-qlever index        # Indexes the data using the Qleverfile
-qlever start        # Starts the SPARQL endpoint
-```
+Start the endpoint (macOS / Linux):
 
-Example:
+/path/to/ontop endpoint\
+--ontology=OMOP.ttl\
+--mapping=OMOP.obda\
+--properties=OMOP.properties\
+--port=8081
 
-```bash
-cd ordo
-./get-data.sh
-qlever index
-qlever start
-```
+Windows PowerShell:
 
-Repeat the same steps for `hoom/` and `wikipathways/`.
+path`\to`{=tex}`\ontop`{=tex}.bat endpoint \^ --ontology=OMOP.ttl \^
+--mapping=OMOP.obda \^ --properties=OMOP.properties \^ --port=8081
 
-## 🌐 Unified Web UI
+Open: http://localhost:8081/sparql
 
-To launch a single web UI for all three endpoints, use the provided `qlever-ui-multi-config.json`:
+------------------------------------------------------------------------
 
-```bash
-docker run -d --restart=unless-stopped \
-  -v $(pwd)/qlever-ui-multi-config.json:/app/config.json \
-  -p 9000:7000 \
-  --name qlever.ui.multi \
-  docker.io/adfreiburg/qlever-ui
-```
+## Example SPARQL Query
 
-Then visit [http://localhost:9000](http://localhost:9000) in your browser.
+SELECT (COUNT(?p) AS ?count) WHERE { ?p a
+<http://www.ohdsi.org/omop#Person> }
 
-## 📁 Folder Structure
+------------------------------------------------------------------------
 
-```
-.
-├── ordo/
-│   ├── Qleverfile
-│   └── get-data.sh
-├── hoom/
-│   ├── Qleverfile
-│   └── get-data.sh
-├── wikipathways/
-│   ├── Qleverfile
-│   └── get-data.sh
-└── qlever-ui-multi-config.json
-```
+## Persistent Identifiers
+
+Rowdy de Groot\
+ORCID: https://orcid.org/0000-0002-1248-1986\
+Affiliation (ROR): https://ror.org/05grdyy37
+
+Andra Waagmeester\
+ORCID: https://orcid.org/0000-0001-9773-4008\
+Affiliation (ROR): https://ror.org/05grdyy37
+
+------------------------------------------------------------------------
+
+## License
+
+MIT License
