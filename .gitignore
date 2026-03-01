@@ -1,0 +1,7 @@
+
+db/OMOP.duckdb
+*.jar
+*.zip
+lib/
+jdbc/
+log/
