@@ -1,0 +1,50 @@
+CREATE TABLE cdm_source AS SELECT * FROM read_parquet('cdm_source.parquet');
+CREATE TABLE metadata AS SELECT * FROM read_parquet('metadata.parquet');
+
+CREATE TABLE person AS SELECT * FROM read_parquet('person.parquet');
+CREATE TABLE observation_period AS SELECT * FROM read_parquet('observation_period.parquet');
+CREATE TABLE specimen AS SELECT * FROM read_parquet('specimen.parquet');
+CREATE TABLE death AS SELECT * FROM read_parquet('death.parquet');
+
+CREATE TABLE visit_occurrence AS SELECT * FROM read_parquet('visit_occurrence.parquet');
+CREATE TABLE visit_detail AS SELECT * FROM read_parquet('visit_detail.parquet');
+
+CREATE TABLE condition_occurrence AS SELECT * FROM read_parquet('condition_occurrence.parquet');
+CREATE TABLE drug_exposure AS SELECT * FROM read_parquet('drug_exposure.parquet');
+CREATE TABLE procedure_occurrence AS SELECT * FROM read_parquet('procedure_occurrence.parquet');
+CREATE TABLE device_exposure AS SELECT * FROM read_parquet('device_exposure.parquet');
+CREATE TABLE measurement AS SELECT * FROM read_parquet('measurement.parquet');
+CREATE TABLE observation AS SELECT * FROM read_parquet('observation.parquet');
+CREATE TABLE note AS SELECT * FROM read_parquet('note.parquet');
+CREATE TABLE note_nlp AS SELECT * FROM read_parquet('note_nlp.parquet');
+
+CREATE TABLE fact_relationship AS SELECT * FROM read_parquet('fact_relationship.parquet');
+
+CREATE TABLE location AS SELECT * FROM read_parquet('location.parquet');
+CREATE TABLE care_site AS SELECT * FROM read_parquet('care_site.parquet');
+CREATE TABLE provider AS SELECT * FROM read_parquet('provider.parquet');
+
+CREATE TABLE payer_plan_period AS SELECT * FROM read_parquet('payer_plan_period.parquet');
+CREATE TABLE cost AS SELECT * FROM read_parquet('cost.parquet');
+
+CREATE TABLE condition_era AS SELECT * FROM read_parquet('condition_era.parquet');
+CREATE TABLE drug_era AS SELECT * FROM read_parquet('drug_era.parquet');
+CREATE TABLE dose_era AS SELECT * FROM read_parquet('dose_era.parquet');
+
+CREATE TABLE cohort AS SELECT * FROM read_parquet('cohort.parquet');
+CREATE TABLE relationship AS SELECT * FROM read_parquet('relationship.parquet');
+CREATE TABLE cohort_definition AS SELECT * FROM read_parquet('cohort_definition.parquet');
+
+CREATE TABLE episode AS SELECT * FROM read_parquet('episode.parquet');
+CREATE TABLE episode_event AS SELECT * FROM read_parquet('episode_event.parquet');
+
+-- Vocabulary tables
+CREATE TABLE concept AS SELECT * FROM read_parquet('concept.parquet');
+CREATE TABLE vocabulary AS SELECT * FROM read_parquet('vocabulary.parquet');
+CREATE TABLE domain AS SELECT * FROM read_parquet('domain.parquet');
+CREATE TABLE concept_class AS SELECT * FROM read_parquet('concept_class.parquet');
+CREATE TABLE concept_relationship AS SELECT * FROM read_parquet('concept_relationship.parquet');
+CREATE TABLE concept_synonym AS SELECT * FROM read_parquet('concept_synonym.parquet');
+CREATE TABLE concept_ancestor AS SELECT * FROM read_parquet('concept_ancestor.parquet');
+CREATE TABLE source_to_concept_map AS SELECT * FROM read_parquet('source_to_concept_map.parquet');
+CREATE TABLE drug_strength AS SELECT * FROM read_parquet('drug_strength.parquet');

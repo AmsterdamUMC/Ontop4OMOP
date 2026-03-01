@@ -1,0 +1,7 @@
+ontop endpoint ^
+    --ontology=input/OMOP.ttl ^
+    --mapping=input/OMOP.obda ^
+    --properties=input/OMOP.properties ^
+
+
+    ?--cors-allowed-origins=http://yasgui.org 
