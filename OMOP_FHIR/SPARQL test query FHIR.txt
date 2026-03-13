@@ -1,0 +1,39 @@
+SELECT ?medicationStatement ?patient ?rxnormCode ?startDate
+WHERE {
+  # Zoek een FHIR MedicationStatement
+  ?medicationStatement a fhir:MedicationStatement ;
+                       fhir:subject ?patient ;
+                       fhir:medicationCodeableConcept ?rxnormCode ;
+                       fhir:effectiveDateTime ?startDate .
+
+  # Filter op een echte RxNorm code (optioneel)
+  FILTER (datatype(?startDate) = xsd:date)
+}
+LIMIT 10
+
+
+
+
+
+
+PREFIX fhir: <http://hl7.org/fhir/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?medicationStatement ?patient ?rxnormCode ?conceptName ?startDate
+WHERE {
+  # FHIR MedicationStatement uit jouw OBDA-mapping
+  ?medicationStatement a fhir:MedicationStatement ;
+                       fhir:subject ?patient ;
+                       fhir:medicationCodeableConcept ?rxnormCode ;
+                       fhir:effectiveDateTime ?startDate .
+
+  # Join naar OMOP concept table via drug_concept_id
+  # (Ontop vertaalt dit automatisch naar SQL)
+  ?concept a <http://www.ohdsi.org/omop#Concept> ;
+           <http://www.ohdsi.org/omop#conceptId> ?rxnormCode ;
+           <http://www.ohdsi.org/omop#conceptName> ?conceptName .
+
+  # Optioneel: toon alleen echte RxNorm concepten
+  FILTER regex(str(?rxnormCode), "^[0-9]+$")
+}
+LIMIT 20
