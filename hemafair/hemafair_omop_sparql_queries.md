@@ -122,7 +122,8 @@ Reference median (from SQL): Female ≈ 885.4 · Male ≈ 764.3
 ## Q3 — Transfusion status distribution per diagnosis
 
 Joins condition_occurrence (diagnosis) with observation (transfusion status).
-Transfusion status label is resolved from `value_as_concept_id` via the concept table — no source strings used.
+Transfusion status is read from `value_source_value` — `value_as_concept_id` is not
+populated for this observation type in this dataset.
 
 ```sparql
 PREFIX omop:         <https://w3id.org/omop/ontology/>
@@ -137,8 +138,7 @@ SELECT ?diagnosis ?transfusion_status (COUNT(DISTINCT ?person) AS ?n_patients) W
 
   ?person omop:has_observation ?obs .
   ?obs omop:has_concept omop_concept:40758326 ;
-       omop:has_value_as_concept ?valConcept .
-  ?valConcept rdfs:label ?transfusion_status .
+       omop:value_source_value ?transfusion_status .
 } GROUP BY ?diagnosis ?transfusion_status ORDER BY ?diagnosis ?transfusion_status
 ```
 
@@ -175,36 +175,20 @@ Expected top results:
 ## Q5 — Patients on chelation with no transfusion history
 
 Joins chelation procedures with transfusion observations, keeping only patients
-whose recorded transfusion status is "No" — matching the original SQL inner join logic.
+whose recorded transfusion status source value is "No".
 
 ```sparql
 PREFIX omop:         <https://w3id.org/omop/ontology/>
 PREFIX omop_concept: <http://example.org/omop/concept/>
-PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT (COUNT(DISTINCT ?person) AS ?n_chelation_no_transfusion) WHERE {
   ?person omop:has_procedure_occurrence ?proc .
   ?proc omop:has_concept omop_concept:4068544 .
   ?person omop:has_observation ?obs .
   ?obs omop:has_concept omop_concept:40758326 ;
-       omop:has_value_as_concept ?valConcept .
-  ?valConcept rdfs:label "No" .
+       omop:value_source_value "No" .
 }
 ```
-
-> If the count is unexpected, verify the exact concept labels used for transfusion
-> status in this dataset:
-> ```sparql
-> PREFIX omop:         <https://w3id.org/omop/ontology/>
-> PREFIX omop_concept: <http://example.org/omop/concept/>
-> PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
-> SELECT DISTINCT ?status WHERE {
->   ?obs a omop:Observation ;
->        omop:has_concept omop_concept:40758326 ;
->        omop:has_value_as_concept ?valConcept .
->   ?valConcept rdfs:label ?status .
-> }
-> ```
 
 Expected result: 249
 
