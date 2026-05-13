@@ -96,6 +96,10 @@ mappingId      observation_value_as_concept
 target         ex:observation/{observation_id} omop:has_value_as_concept ex:concept/{value_as_concept_id} .
 source         SELECT observation_id, value_as_concept_id FROM omop.observation WHERE value_as_concept_id IS NOT NULL AND value_as_concept_id <> 0
 
+mappingId      observation_value_as_string
+target         ex:observation/{observation_id} omop:has_value_as_string "{value_as_string}" .
+source         SELECT observation_id, value_as_string FROM omop.observation WHERE value_as_string IS NOT NULL
+
 mappingId      observation_value_source_value
 target         ex:observation/{observation_id} omop:value_source_value "{value_source_value}" .
 source         SELECT observation_id, value_source_value FROM omop.observation WHERE value_source_value IS NOT NULL AND value_source_value <> ''
