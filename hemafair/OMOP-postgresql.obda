@@ -1,0 +1,107 @@
+[PrefixDeclaration]
+ex:    http://example.org/omop/
+omop:  https://w3id.org/omop/ontology/
+rdf:   http://www.w3.org/1999/02/22-rdf-syntax-ns#
+rdfs:  http://www.w3.org/2000/01/rdf-schema#
+owl:   http://www.w3.org/2002/07/owl#
+xsd:   http://www.w3.org/2001/XMLSchema#
+
+[MappingDeclaration] @collection [[
+
+mappingId      person_class
+target         ex:person/{person_id} a omop:Person .
+source         SELECT person_id FROM omop.person
+
+mappingId      person_gender
+target         ex:person/{person_id} omop:has_gender ex:concept/{gender_concept_id} .
+source         SELECT person_id, gender_concept_id FROM omop.person
+
+mappingId      person_birth
+target         ex:person/{person_id} omop:year_of_birth "{year_of_birth}"^^xsd:integer .
+source         SELECT person_id, year_of_birth FROM omop.person
+
+mappingId      visit_class
+target         ex:visit/{visit_occurrence_id} a omop:VisitOccurrence .
+source         SELECT visit_occurrence_id FROM omop.visit_occurrence
+
+mappingId      visit_person
+target         ex:person/{person_id} omop:has_visit_occurrence ex:visit/{visit_occurrence_id} .
+source         SELECT visit_occurrence_id, person_id FROM omop.visit_occurrence
+
+mappingId      visit_concept
+target         ex:visit/{visit_occurrence_id} omop:has_concept ex:concept/{visit_concept_id} .
+source         SELECT visit_occurrence_id, visit_concept_id FROM omop.visit_occurrence
+
+mappingId      condition_class
+target         ex:condition/{condition_occurrence_id} a omop:ConditionOccurrence .
+source         SELECT condition_occurrence_id FROM omop.condition_occurrence
+
+mappingId      condition_person
+target         ex:person/{person_id} omop:has_condition_occurrence ex:condition/{condition_occurrence_id} .
+source         SELECT condition_occurrence_id, person_id FROM omop.condition_occurrence
+
+mappingId      condition_concept
+target         ex:condition/{condition_occurrence_id} omop:has_concept ex:concept/{condition_concept_id} .
+source         SELECT condition_occurrence_id, condition_concept_id FROM omop.condition_occurrence
+
+mappingId      drug_class
+target         ex:drug/{drug_exposure_id} a omop:DrugExposure .
+source         SELECT drug_exposure_id FROM omop.drug_exposure
+
+mappingId      drug_person
+target         ex:person/{person_id} omop:has_drug_exposure ex:drug/{drug_exposure_id} .
+source         SELECT drug_exposure_id, person_id FROM omop.drug_exposure
+
+mappingId      drug_concept
+target         ex:drug/{drug_exposure_id} omop:has_concept ex:concept/{drug_concept_id} .
+source         SELECT drug_exposure_id, drug_concept_id FROM omop.drug_exposure
+
+mappingId      measurement_class
+target         ex:measurement/{measurement_id} a omop:Measurement .
+source         SELECT measurement_id FROM omop.measurement
+
+mappingId      measurement_person
+target         ex:person/{person_id} omop:has_measurement ex:measurement/{measurement_id} .
+source         SELECT measurement_id, person_id FROM omop.measurement
+
+mappingId      measurement_concept
+target         ex:measurement/{measurement_id} omop:has_concept ex:concept/{measurement_concept_id} .
+source         SELECT measurement_id, measurement_concept_id FROM omop.measurement
+
+mappingId      measurement_value_as_number
+target         ex:measurement/{measurement_id} omop:value_as_number "{value_as_number}"^^xsd:decimal .
+source         SELECT measurement_id, value_as_number FROM omop.measurement WHERE value_as_number IS NOT NULL
+
+mappingId      concept_class
+target         ex:concept/{concept_id} a omop:Concept ; omop:name "{concept_name}" ; rdfs:label "{concept_name}" .
+source         SELECT concept_id, concept_name FROM omop.concept
+
+mappingId      observation_class
+target         ex:observation/{observation_id} a omop:Observation .
+source         SELECT observation_id FROM omop.observation
+
+mappingId      observation_person
+target         ex:person/{person_id} omop:has_observation ex:observation/{observation_id} .
+source         SELECT observation_id, person_id FROM omop.observation
+
+mappingId      observation_concept
+target         ex:observation/{observation_id} omop:has_concept ex:concept/{observation_concept_id} .
+source         SELECT observation_id, observation_concept_id FROM omop.observation
+
+mappingId      observation_value_as_concept
+target         ex:observation/{observation_id} omop:has_value_as_concept ex:concept/{value_as_concept_id} .
+source         SELECT observation_id, value_as_concept_id FROM omop.observation WHERE value_as_concept_id IS NOT NULL AND value_as_concept_id <> 0
+
+mappingId      procedure_class
+target         ex:procedure/{procedure_occurrence_id} a omop:ProcedureOccurrence .
+source         SELECT procedure_occurrence_id FROM omop.procedure_occurrence
+
+mappingId      procedure_person
+target         ex:person/{person_id} omop:has_procedure_occurrence ex:procedure/{procedure_occurrence_id} .
+source         SELECT procedure_occurrence_id, person_id FROM omop.procedure_occurrence
+
+mappingId      procedure_concept
+target         ex:procedure/{procedure_occurrence_id} omop:has_concept ex:concept/{procedure_concept_id} .
+source         SELECT procedure_occurrence_id, procedure_concept_id FROM omop.procedure_occurrence
+
+]]
