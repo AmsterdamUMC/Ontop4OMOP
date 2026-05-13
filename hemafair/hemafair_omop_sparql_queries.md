@@ -10,8 +10,8 @@ query time via `rdfs:label` on concept nodes (also mapped to `omop:name` for ont
 ```
 ontop endpoint \
   --ontology=ontology/OMOP.ttl \
-  --mapping=mappings/OMOP-postgresql.obda \
-  --properties=mappings/OMOP-postgresql.properties \
+  --mapping=hemafair/OMOP-postgresql.obda \
+  --properties=hemafair/OMOP-postgresql.properties \
   --port=8081
 ```
 
@@ -20,10 +20,10 @@ ontop endpoint \
 ## Prefixes
 
 ```
-PREFIX ex:    <http://example.org/omop/>
-PREFIX omop:  <https://w3id.org/omop/ontology/>
-PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX omop:         <https://w3id.org/omop/ontology/>
+PREFIX omop_concept: <http://example.org/omop/concept/>
+PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:          <http://www.w3.org/2001/XMLSchema#>
 ```
 
 ---
@@ -31,9 +31,7 @@ PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
 ## Overview — Row counts across clinical tables
 
 ```sparql
-PREFIX ex:   <http://example.org/omop/>
 PREFIX omop: <https://w3id.org/omop/ontology/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?table_name (COUNT(?x) AS ?row_count) WHERE {
   { ?x a omop:Person .              BIND("person"               AS ?table_name) }
@@ -60,15 +58,15 @@ Counts distinct patients per primary diagnosis concept.
 Filters on the three thalassaemia/sickle cell concept IDs; label comes from the concept table.
 
 ```sparql
-PREFIX ex:   <http://example.org/omop/>
-PREFIX omop: <https://w3id.org/omop/ontology/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX omop:         <https://w3id.org/omop/ontology/>
+PREFIX omop_concept: <http://example.org/omop/concept/>
+PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?diagnosis (COUNT(DISTINCT ?person) AS ?n_patients) WHERE {
   ?person omop:has_condition_occurrence ?condition .
   ?condition omop:has_concept ?concept .
   ?concept rdfs:label ?diagnosis .
-  FILTER(?concept IN (ex:concept/4287844, ex:concept/4278669, ex:concept/25518))
+  FILTER(?concept IN (omop_concept:4287844, omop_concept:4278669, omop_concept:25518))
 } GROUP BY ?diagnosis ORDER BY DESC(?n_patients)
 ```
 
@@ -88,13 +86,13 @@ SPARQL does not have a MEDIAN aggregate, so two variants are provided.
 ### Q2a — Average ferritin by sex (SPARQL aggregate)
 
 ```sparql
-PREFIX ex:   <http://example.org/omop/>
-PREFIX omop: <https://w3id.org/omop/ontology/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX omop:         <https://w3id.org/omop/ontology/>
+PREFIX omop_concept: <http://example.org/omop/concept/>
+PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?sex (AVG(?value) AS ?avg_ferritin) (COUNT(?meas) AS ?n_measurements) WHERE {
   ?person omop:has_measurement ?meas .
-  ?meas omop:has_concept ex:concept/37208753 ;
+  ?meas omop:has_concept omop_concept:37208753 ;
         omop:value_as_number ?value .
   ?person omop:has_gender ?genderConcept .
   ?genderConcept rdfs:label ?sex .
@@ -104,13 +102,13 @@ SELECT ?sex (AVG(?value) AS ?avg_ferritin) (COUNT(?meas) AS ?n_measurements) WHE
 ### Q2b — Raw ferritin values with sex (for median computation elsewhere)
 
 ```sparql
-PREFIX ex:   <http://example.org/omop/>
-PREFIX omop: <https://w3id.org/omop/ontology/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX omop:         <https://w3id.org/omop/ontology/>
+PREFIX omop_concept: <http://example.org/omop/concept/>
+PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?sex ?value WHERE {
   ?person omop:has_measurement ?meas .
-  ?meas omop:has_concept ex:concept/37208753 ;
+  ?meas omop:has_concept omop_concept:37208753 ;
         omop:value_as_number ?value .
   ?person omop:has_gender ?genderConcept .
   ?genderConcept rdfs:label ?sex .
@@ -127,18 +125,18 @@ Joins condition_occurrence (diagnosis) with observation (transfusion status).
 Transfusion status label is resolved from `value_as_concept_id` via the concept table — no source strings used.
 
 ```sparql
-PREFIX ex:   <http://example.org/omop/>
-PREFIX omop: <https://w3id.org/omop/ontology/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX omop:         <https://w3id.org/omop/ontology/>
+PREFIX omop_concept: <http://example.org/omop/concept/>
+PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?diagnosis ?transfusion_status (COUNT(DISTINCT ?person) AS ?n_patients) WHERE {
   ?person omop:has_condition_occurrence ?condition .
   ?condition omop:has_concept ?diagConcept .
   ?diagConcept rdfs:label ?diagnosis .
-  FILTER(?diagConcept IN (ex:concept/4287844, ex:concept/4278669, ex:concept/25518))
+  FILTER(?diagConcept IN (omop_concept:4287844, omop_concept:4278669, omop_concept:25518))
 
   ?person omop:has_observation ?obs .
-  ?obs omop:has_concept ex:concept/40758326 ;
+  ?obs omop:has_concept omop_concept:40758326 ;
        omop:has_value_as_concept ?valConcept .
   ?valConcept rdfs:label ?transfusion_status .
 } GROUP BY ?diagnosis ?transfusion_status ORDER BY ?diagnosis ?transfusion_status
@@ -151,15 +149,15 @@ SELECT ?diagnosis ?transfusion_status (COUNT(DISTINCT ?person) AS ?n_patients) W
 Excludes the three primary diagnoses and unmapped concepts (concept_id = 0).
 
 ```sparql
-PREFIX ex:   <http://example.org/omop/>
-PREFIX omop: <https://w3id.org/omop/ontology/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX omop:         <https://w3id.org/omop/ontology/>
+PREFIX omop_concept: <http://example.org/omop/concept/>
+PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?comorbidity (COUNT(DISTINCT ?person) AS ?n_patients) WHERE {
   ?person omop:has_condition_occurrence ?condition .
   ?condition omop:has_concept ?concept .
   ?concept rdfs:label ?comorbidity .
-  FILTER(?concept NOT IN (ex:concept/4287844, ex:concept/4278669, ex:concept/25518, ex:concept/0))
+  FILTER(?concept NOT IN (omop_concept:4287844, omop_concept:4278669, omop_concept:25518, omop_concept:0))
 } GROUP BY ?comorbidity ORDER BY DESC(?n_patients)
 ```
 
@@ -180,16 +178,16 @@ Uses SPARQL MINUS to exclude patients who have any transfusion observation whose
 concept label is not "No".
 
 ```sparql
-PREFIX ex:   <http://example.org/omop/>
-PREFIX omop: <https://w3id.org/omop/ontology/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX omop:         <https://w3id.org/omop/ontology/>
+PREFIX omop_concept: <http://example.org/omop/concept/>
+PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT (COUNT(DISTINCT ?person) AS ?n_chelation_no_transfusion) WHERE {
   ?person omop:has_procedure_occurrence ?proc .
-  ?proc omop:has_concept ex:concept/4068544 .
+  ?proc omop:has_concept omop_concept:4068544 .
   MINUS {
     ?person omop:has_observation ?obs .
-    ?obs omop:has_concept ex:concept/40758326 ;
+    ?obs omop:has_concept omop_concept:40758326 ;
          omop:has_value_as_concept ?valConcept .
     ?valConcept rdfs:label ?status .
     FILTER(?status != "No")
@@ -200,12 +198,12 @@ SELECT (COUNT(DISTINCT ?person) AS ?n_chelation_no_transfusion) WHERE {
 > If results are unexpected, first verify the exact concept labels for transfusion
 > status in this dataset:
 > ```sparql
-> PREFIX ex:   <http://example.org/omop/>
-> PREFIX omop: <https://w3id.org/omop/ontology/>
-> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+> PREFIX omop:         <https://w3id.org/omop/ontology/>
+> PREFIX omop_concept: <http://example.org/omop/concept/>
+> PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 > SELECT DISTINCT ?status WHERE {
 >   ?obs a omop:Observation ;
->        omop:has_concept ex:concept/40758326 ;
+>        omop:has_concept omop_concept:40758326 ;
 >        omop:has_value_as_concept ?valConcept .
 >   ?valConcept rdfs:label ?status .
 > }
@@ -222,7 +220,6 @@ Patients with no value do not appear in the virtual graph (NULL rows are exclude
 so n_missing = 999 − n_with_value.
 
 ```sparql
-PREFIX ex:   <http://example.org/omop/>
 PREFIX omop: <https://w3id.org/omop/ontology/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
