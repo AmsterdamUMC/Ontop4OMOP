@@ -174,8 +174,8 @@ Expected top results:
 
 ## Q5 — Patients on chelation with no transfusion history
 
-Uses SPARQL MINUS to exclude patients who have any transfusion observation whose
-concept label is not "No".
+Joins chelation procedures with transfusion observations, keeping only patients
+whose recorded transfusion status is "No" — matching the original SQL inner join logic.
 
 ```sparql
 PREFIX omop:         <https://w3id.org/omop/ontology/>
@@ -185,17 +185,14 @@ PREFIX rdfs:         <http://www.w3.org/2000/01/rdf-schema#>
 SELECT (COUNT(DISTINCT ?person) AS ?n_chelation_no_transfusion) WHERE {
   ?person omop:has_procedure_occurrence ?proc .
   ?proc omop:has_concept omop_concept:4068544 .
-  MINUS {
-    ?person omop:has_observation ?obs .
-    ?obs omop:has_concept omop_concept:40758326 ;
-         omop:has_value_as_concept ?valConcept .
-    ?valConcept rdfs:label ?status .
-    FILTER(?status != "No")
-  }
+  ?person omop:has_observation ?obs .
+  ?obs omop:has_concept omop_concept:40758326 ;
+       omop:has_value_as_concept ?valConcept .
+  ?valConcept rdfs:label "No" .
 }
 ```
 
-> If results are unexpected, first verify the exact concept labels for transfusion
+> If the count is unexpected, verify the exact concept labels used for transfusion
 > status in this dataset:
 > ```sparql
 > PREFIX omop:         <https://w3id.org/omop/ontology/>
